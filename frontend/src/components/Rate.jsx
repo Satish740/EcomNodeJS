@@ -52,9 +52,7 @@ const Rate = ({ value, text, color }) => {
     </div>
   );
 };
-Rate.defaultProps = {
-    color: '#f8e825',
-  };
+
 
 
 export default Rate;

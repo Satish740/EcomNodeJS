@@ -1,31 +1,40 @@
 import {useParams } from "react-router-dom"
-import { useEffect,useState } from "react"
+// import { useEffect,useState } from "react"
+// import axios from "axios"
+
 import { Link } from "react-router-dom"
-import axios from "axios"
 import {Row,Col,Image,ListGroup,Button,Card} from "react-bootstrap"
 import Rate from "../components/Rate"
-
+import { useGetProductDetailsQuery } from "../slices/productsApiSlice"
 
 function ProductScreen() {
-    const [product,setProduct]=useState([]);
     const { id: productId } = useParams()
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const { data } = await axios.get(`/api/products/${productId}`);
-                setProduct(data);
-            } catch (error) {
-                console.error('Error fetching products:', error);
-            }
-        };
-        fetchProducts();
-    }
-    , [productId]);
+    // const [product,setProduct]=useState([]);
+    // 
+    // useEffect(() => {
+    //     const fetchProducts = async () => {
+    //         try {
+    //             const { data } = await axios.get(`/api/products/${productId}`);
+    //             setProduct(data);
+    //         } catch (error) {
+    //             console.error('Error fetching products:', error);
+    //         }
+    //     };
+    //     fetchProducts();
+    // }
+    // , [productId]);
     
+    const { data: product ,isLoading , error} = useGetProductDetailsQuery(productId);
     return (
     <div>
         <Link to='/' className='btn btn-light my-3'>Go Back</Link>
-        <Row>
+        {isLoading ? (
+            <h2>Loading</h2>
+        ) : error ? (
+            <div>{error?.data?.message || error.error}</div>
+        ) : (
+            <>
+                    <Row>
             <Col md={5}>
                 <Image src={product.image} alt={product.name} fluid />
             </Col>
@@ -69,6 +78,10 @@ function ProductScreen() {
                 </Card>
             </Col>
         </Row>
+            </>
+        )}
+
+        
     </div>
      )
 }
